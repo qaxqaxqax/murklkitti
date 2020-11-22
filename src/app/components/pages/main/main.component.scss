@@ -1,0 +1,33 @@
+@import './../../../../scss/_global.scss';
+
+section.main-page{
+  display: block;
+  height: 100%;
+  position: relative;
+  .background-slider{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    .main-background{
+      width: 100vw;
+      height: 100vh;
+      .book-cover-background{
+        background-color: $blue-bell;
+      }
+      .website-background{
+        background-color: $levander-frog;
+      }
+      .conceptual-identity-background{
+        background-color: $glacier-gray;
+      }
+      .mini-game-background{
+        background-color: $blue-velvet;
+      }
+      .logo-background{
+        background-color: $seoul-white;
+      }
+    }
+  }
+}

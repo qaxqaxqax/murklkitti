@@ -1,0 +1,11 @@
+<section class="main-page" #foo>
+  <mrkl-content-slider class="background-slider"
+    [slide$]="slide$"
+  >
+    <div class="main-background book-cover-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
+    <div class="main-background website-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
+    <div class="main-background conceptual-identity-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
+    <div class="main-background mini-game-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
+    <div class="main-background logo-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
+  </mrkl-content-slider>
+</section>

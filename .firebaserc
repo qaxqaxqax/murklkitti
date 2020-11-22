@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "murklkitti"
+  },
+  "targets": {
+    "murklkitti": {
+      "hosting": {
+        "murklkitti": [
+          "murklkitti"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+@function encodecolor($string) {
+	@if type-of($string) == 'color' {
+        $hex: str-slice(ie-hex-str($string), 4);
+        $string:unquote("#{$hex}");
+    }
+    $string: '%23' + $string;
+	@return $string;
+}
+
+@function rem($number){
+	@return unquote(($number/10)+'rem');
+}
+
+@mixin media($width){
+	@media only screen and (max-width: #{$width}px) { @content; }
+}
+@mixin mediar($width){
+	@media only screen and (min-width: #{$width}px) { @content; }
+}
+
+@mixin mediah($height){
+	@media only screen and (max-height: #{$height}px) { @content; }
+}
+@mixin mediahr($height){
+	@media only screen and (min-height: #{$height}px) { @content; }
+}
+
+@mixin browseropt($element, $value){
+	-webkit-#{$element}: $value;
+	-moz-#{$element}: $value;
+	-ms-#{$element}: $value;
+	-o-#{$element}: $value;
+	#{$element}: $value;
+}
+
+@mixin placeholder{
+	&::-webkit-input-placeholder { @content }
+	&:-moz-placeholder 			 { @content }
+	&::-moz-placeholder 		 { @content }
+	&:-ms-placeholder 			 { @content }
+}
+
+%fsb{
+	font-size: 10rem;
+	@include media(500){
+		font-size: 20rem;
+	}
+}
+
+%center-container{
+  width: rem($center-box-width);
+  margin: 0 auto;
+  @include browseropt(box-sizing, border-box);
+  position: relative;
+}
+
+%outter-center-container{
+	width: rem($outter-center-box-width);
+  margin: 0 auto;
+  @include browseropt(box-sizing, border-box);
+  position: relative;
+}

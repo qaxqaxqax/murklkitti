@@ -1,0 +1,3 @@
+<ng-container *ngFor="let slide of _render">
+  <ng-container *ngTemplateOutlet="slide._tpl, context: { $implicit: slide.data }"></ng-container>
+</ng-container>
