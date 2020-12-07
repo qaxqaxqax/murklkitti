@@ -1,0 +1,28 @@
+<section class="project-page">
+  <header mrklHeader class="project-header" (wheel)="onNavWheel($event)">
+    <ul>
+      <li><a href="/project?name={{id}}#contact">CONTACT</a></li>
+    </ul>
+  </header>
+  <mrkl-reference
+    [project]="id"
+  ></mrkl-reference>
+  <div class="see-more">
+    <div class="see-more-content">See more projects of mine</div>
+  </div>
+  <div class="project-navigator" *ngIf="prev && next">
+    <div class="navigator-background" [style]="'transform: translate('+delta+'vw, 0); transition: transform '+( (delta == 0) ? 300 : ((delta * 10)|abs ) )+'ms ease-out'">
+      <div class="prev">
+        <div class="project-text" [style]="'transform: scale('+scaleLeft+','+scaleLeft+')'">{{prev.title}}</div>
+      </div>
+      <div class="next">
+        <div class="project-text" [style]="'transform: scale('+scaleRight+','+scaleRight+')'">{{next.title}}</div>
+      </div>
+    </div>
+    <div class="controller-container" #navigatorController (mouseenter)="handleEnterAnimation($event)" (mouseleave)="handleLeaveAnimation($event)" (mousemove)="handleMoveAnimation($event)">
+      <a class="prev" [routerLink]="['/','project']" [queryParams]="{'name': prev.id}"></a>
+      <a class="next" [routerLink]="['/','project']" [queryParams]="{'name': next.id}"></a>
+    </div>
+  </div>
+  <footer mrklFooter id="contact"></footer>
+</section>

@@ -1,0 +1,75 @@
+@import './../../../scss/_global.scss';
+
+%narrow-center-box{
+  width: rem($center-box-width - 2 * 85);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+mrkl-reference{
+  display: block;
+  width: rem($center-box-width);
+  margin-left: auto;
+  margin-right: auto;
+  @include browseropt(box-sizing, border-box);
+  padding-top: rem(75);
+  padding-bottom: rem(125);
+  .landscape-image{
+    width: 100%;
+    margin-top: rem(75);
+    margin-bottom: rem(75);
+  }
+  .landscape-video{
+    width: rem($center-box-width);
+    height: rem(1080/1920*$center-box-width);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: rem(75);
+    margin-bottom: rem(75);
+  }
+  .portrait-image{
+    width: 50%;
+    margin-left: 50%;
+    margin-top: rem(75);
+    margin-bottom: rem(75);
+  }
+  .landscape-info{
+    display: flex;
+    flex-direction: row;
+    @include browseropt(box-sizing, border-box);
+    padding-top: rem(75);
+    padding-bottom: rem(75);
+    list-style-type: none;
+    @extend %narrow-center-box;
+    > li {
+      display: block;
+      padding-right: rem(100);
+      font-weight: 600;
+      font-size: rem(30);
+      line-height: rem(35);
+      letter-spacing: rem(.15);
+      &:last-child{
+        padding-right: 0;
+      }
+    }
+  }
+  .heading-text{
+    display: block;
+    font-weight: bold;
+    font-size: rem(46);
+    line-height: rem(54);
+    letter-spacing: rem(.15);
+    @extend %narrow-center-box;
+  }
+  .plain-text{
+    display: block;
+    @include browseropt(box-sizing, border-box);
+    padding-top: rem(75);
+    padding-bottom: rem(75);
+    font-weight: 600;
+    font-size: rem(30);
+    line-height: rem(35);
+    letter-spacing: rem(.15);
+    @extend %narrow-center-box;
+  }
+}

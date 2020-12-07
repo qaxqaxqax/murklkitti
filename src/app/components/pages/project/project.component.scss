@@ -1,0 +1,101 @@
+@import './../../../../scss/_global.scss';
+
+app-project{
+  display: block;
+  height: 100%;
+  overflow: auto;
+  section.project-page{
+    display: block;
+    min-height: 100vh;
+    position: relative;
+    background-color: $white-smoke;
+    @include browseropt(box-sizing, border-box);
+    padding-top: rem(150);
+    overflow: hidden;
+    header.project-header{
+      width: calc(100vw - 15px);
+      .header-center-container nav.menu{
+        transform: translate(15px, -50%);
+      }
+    }
+    header.project-header .header-center-container nav.menu > ul > li a, header.project-header .header-center-container .name{
+      cursor: url('/assets/images/cursor/hover-glaciergray.svg') 16 16, auto;
+      cursor: -webkit-image-set(url('/assets/images/cursor/hover-glaciergray.svg') 1x, url('/assets/images/cursor/hover-glaciergray.svg') 2x) 16 16, pointer;
+    }
+    .see-more{
+      width: rem($center-box-width);
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: rem(50);
+      padding-top: rem(50);
+      .see-more-content{
+        color: $dark-gray;
+        font-size: rem(90);
+        letter-spacing: rem(.15);
+        line-height: rem(100);
+        width: rem(900);
+        font-weight: bold;
+        margin-right: auto;
+      }
+    }
+    .project-navigator{
+      width: 200vw;
+      position: relative;
+      left: -50vw;
+      @include browseropt(box-sizing, border-box);
+      padding-bottom: rem(200);
+      padding-top: rem(50);
+      .navigator-background{
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        transition: transform 300ms ease-in;
+        .prev, .next{
+          display: block;
+          width: 100vw;
+          position: relative;
+          .project-text{
+            font-family: 'Epilogue', sans-serif;
+            letter-spacing: rem(.15);
+            font-weight: bold;
+            font-size: rem(160);
+            line-height: rem(164);
+            width: 75vw;
+            text-align: center;
+            text-transform: uppercase;
+            @include browseropt(box-sizing, border-box);
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: rem(100);
+            padding-bottom: rem(100);
+            transition: transform 300ms ease;
+          }
+        }
+        &:after{
+          content: '';
+          clear: both;
+          display: block;
+        }
+      }
+      .controller-container{
+        position: absolute;
+        width: 100vw;
+        left: 50vw;
+        right: 50vw;
+        top: rem(50);
+        bottom: rem(200);
+        z-index: 2;
+        .prev, .next{
+          display: block;
+          width: 50vw;
+          height: 100%;
+          cursor: url('/assets/images/cursor/hover-glaciergray.svg') 16 16, auto;
+          cursor: -webkit-image-set(url('/assets/images/cursor/hover-glaciergray.svg') 1x, url('/assets/images/cursor/hover-glaciergray.svg') 2x) 16 16, pointer;
+          float: left;
+        }
+      }
+    }
+  }
+}

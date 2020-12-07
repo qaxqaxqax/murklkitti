@@ -2,7 +2,8 @@
 @import './scss/_files/_03-normalize.scss';
 @import './scss/_files/_04-main.scss';
 
-@import url('https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&subset=latin-ext');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;1,700&family=Work+Sans:wght@600;700&display=swap');
 
 *{
 	margin: 0;
@@ -14,11 +15,14 @@ html{
 	height: 100%;
 	overflow: hidden;
 	position: relative;
-	font-family: 'Ubuntu', sans-serif;
+	font-family: 'Work Sans', 'Epilogue', sans-serif;
 	font-size: 10px;
+	color: $dark-gray;
 	@include media($outter-center-box-width){
 		font-size: calc(100vw / #{$outter-center-box-width} * 10);
 	}
+	cursor: url('/assets/images/cursor/default-glaciergray.svg') 14.5 14.5, auto;
+	cursor: -webkit-image-set(url('/assets/images/cursor/default-glaciergray.svg') 1x, url('/assets/images/cursor/default-glaciergray.svg') 2x) 14.5 14.5, auto;
 }
 
 body{

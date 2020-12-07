@@ -1,11 +1,35 @@
-<section class="main-page" #foo>
-  <mrkl-content-slider class="background-slider"
+<section class="main-page {{background}}">
+  <header mrklHeader class="main-header">
+    <ul>
+      <li><a routerLink="/" [fragment]="'book-cover'">WORK</a></li>
+      <li><a routerLink="/" [fragment]="'contact'">CONTACT</a></li>
+    </ul>
+  </header>
+  <div class="main-background"></div>
+  <mrkl-content-slider class="foreground-slider" #contentSliderRef
     [slide$]="slide$"
+    [next$]="next$"
+    [prev$]="prev$"
+    [animation]="slideAnimation"
+    [renderAll]="false"
+    [circular]="false"
   >
-    <div class="main-background book-cover-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
-    <div class="main-background website-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
-    <div class="main-background conceptual-identity-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
-    <div class="main-background mini-game-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
-    <div class="main-background logo-background" *CSlide="let element" SlideAnimationTarget [ngClass]="{'active': element.active}"></div>
+    <div class="main-foreground introduction" *CSlide="let element;payload:{id:'introduction'}" SlideAnimationTarget [ngClass]="{'active': element.active}">
+      <div class="introduction-center-container">
+        <div class="introduce">Visual Designer from Hungary.</div>
+      </div>
+    </div>
+    <ng-container *ngFor="let project of project.references">
+      <div class="main-foreground {{project.id}}" *CSlide="let element;payload:project" SlideAnimationTarget [ngClass]="{'active': element.active}">
+        <div class="center-container">
+          <a class="title" [routerLink]="['/','project']" [queryParams]="{'name': project.id}">
+            <span>{{project.title}}</span>
+            <img class="image" [attr.src]="'/assets/images/projects/'+project.id+'/cover.jpg'" alt="" />
+          </a>
+          <dic class="type">{{project.type}}</dic>
+        </div>
+      </div>
+    </ng-container>
+    <footer mrklFooter class="main-foreground footer contact" *CSlide="let element;payload:{id:'contact'}" SlideAnimationTarget [ngClass]="{'active': element.active}"></footer>
   </mrkl-content-slider>
 </section>

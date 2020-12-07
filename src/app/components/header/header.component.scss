@@ -1,0 +1,61 @@
+@import './../../../scss/_global.scss';
+
+header[mrklHeader]{
+  height: rem(150);
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  .header-center-container{
+    @include browseropt(user-select, none);
+    width: rem($center-box-width);
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    height: 100%;
+    text-transform: uppercase;
+    font-weight: bold;
+    line-height: rem(28);
+    letter-spacing: rem(.15);
+    font-size: rem(24);
+    color: $dark-gray;
+    .name{
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translate(0, -50%);
+      background-image: url('/assets/images/logo.svg');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: rem(162) auto;
+      width: rem(162);
+      height: 100%;
+    }
+    nav.menu{
+      display: block;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translate(0, -50%);
+      > ul {
+        list-style-type: none;
+        > li{
+          float: left;
+          display: block;
+          margin-left: rem(80);
+          a{
+            color: $dark-gray;
+            text-decoration: none;
+          }
+          &:after{
+            content: '';
+            display: block;
+            clear: both;
+          }
+        }
+      }
+    }
+  }
+}

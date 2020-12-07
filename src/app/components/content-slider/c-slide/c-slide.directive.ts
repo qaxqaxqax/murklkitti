@@ -5,6 +5,7 @@ import { Directive, TemplateRef, Input } from '@angular/core';
 })
 export class CSlideDirective {
 
+  @Input() CSlidePayload:any = null;
   @Input() data:object = {
     active: false
   }
@@ -13,8 +14,8 @@ export class CSlideDirective {
   }
 
   constructor(
-    //public _tpl:TemplateRef<any>
-  ) { }
+    public _tpl:TemplateRef<any>
+  ) {  }
 
   markActive():CSlideDirective{
     this.data = Object.assign(this.data, {active: true});

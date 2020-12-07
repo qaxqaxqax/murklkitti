@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input, OnDestroy, ContentChildren, QueryList, AfterContentInit, ViewChild, ViewContainerRef, DoCheck, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, OnDestroy, ContentChildren, QueryList, AfterContentInit, ViewChild, ViewContainerRef, DoCheck, ElementRef, ContentChild } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { CSlideDirective } from './c-slide/c-slide.directive';
 import { AnimationFactory, AnimationPlayer } from '@angular/animations';
@@ -17,29 +17,29 @@ export class ContentSliderComponent implements OnInit, OnDestroy, AfterContentIn
   _render:CSlideDirective[] = [];
 
   @Input() circular: boolean = true;
-  _next$:Subject<void> = new Subject<void>();
+  _next$:Subject<Subject<CSlideDirective>> = new Subject<Subject<CSlideDirective>>();
   __nextSubscription:Subscription = null;
-  @Input() set next$(next$:Subject<void>){
+  @Input() set next$(next$:Subject<Subject<CSlideDirective>>){
     this.unsubscribeFrom(this.__nextSubscription);
     this._next$ = next$;
     this.watchNext();
   }
-  get next$():Subject<void>{
+  get next$():Subject<Subject<CSlideDirective>>{
     return this._next$;
   }
-  _prev$:Subject<void> = new Subject<void>();
+  _prev$:Subject<Subject<CSlideDirective>> = new Subject<Subject<CSlideDirective>>();
   __prevSubscription:Subscription = null;
-  @Input() set prev$(prev$:Subject<void>){
+  @Input() set prev$(prev$:Subject<Subject<CSlideDirective>>){
     this.unsubscribeFrom(this.__prevSubscription);
     this._prev$ = prev$;
     this.watchPrev();
   }
-  get prev$():Subject<void>{
+  get prev$():Subject<Subject<CSlideDirective>>{
     return this._prev$;
   }
-  _slide$:Subject<number> = new Subject<number>();
+  _slide$:Subject<SlideTo> = new Subject<SlideTo>();
   __slideSubscription:Subscription = null;
-  @Input() set slide$(slide$:Subject<number>){
+  @Input() set slide$(slide$:Subject<SlideTo>){
     this.unsubscribeFrom(this.__slideSubscription);
     this._slide$ = slide$;
     this.watchSlide();
@@ -50,6 +50,7 @@ export class ContentSliderComponent implements OnInit, OnDestroy, AfterContentIn
   @ViewChild('contentHolder', {read: ViewContainerRef, static: true}) content_holder:ViewContainerRef;
   __slidesSubscription:Subscription = new Subscription();
   @ContentChildren(CSlideDirective, {descendants: false, read: CSlideDirective}) slide_templates:QueryList<CSlideDirective>;
+
   slides$:Subject<ContentSlideDirective[]> = new Subject<ContentSlideDirective[]>();
   slides:ContentSlideDirective[] = [];
   slideAnimationTargets$:Subject<SlideAnimationTargetDirective[]> = new Subject<SlideAnimationTargetDirective[]>();
@@ -59,7 +60,7 @@ export class ContentSliderComponent implements OnInit, OnDestroy, AfterContentIn
   playerIn :AnimationPlayer = null;
 
   constructor(
-    private _elRef: ElementRef
+    public _elRef: ElementRef
   ){}
 
   ngOnInit() {
@@ -106,28 +107,34 @@ export class ContentSliderComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   private watchNext(){
-    this.__nextSubscription = this._next$.subscribe(() => {
+    this.__nextSubscription = this._next$.subscribe((done$) => {
+      if(!done$){ done$ = new Subject<CSlideDirective>(); }
       if(this.renderAll){
         this._activateNext();
+        done$.next(this.getActiveSlide());
       }else{
         if(this.animation){
-          this._renderNextInterval();
+          this._renderNextInterval(done$);
         }else{
           this._renderAndActivateNext();
+          done$.next(this.getActiveSlide());
         }
       }
     });
   }
 
   private watchPrev(){
-    this.__prevSubscription = this._prev$.subscribe(() => {
+    this.__prevSubscription = this._prev$.subscribe((done$) => {
+      if(!done$){ done$ = new Subject<CSlideDirective>(); }
       if(this.renderAll){
         this._activatePrev();
+        done$.next(this.getActiveSlide());
       }else{
         if(this.animation){
-          this._renderPrevInterval();
+          this._renderPrevInterval(done$);
         }else{
           this._renderAndActivatePrev();
+          done$.next(this.getActiveSlide());
         }
       }
     });
@@ -207,106 +214,202 @@ export class ContentSliderComponent implements OnInit, OnDestroy, AfterContentIn
     }
   }
 
-  private _renderNextInterval(){
+  private _renderNextInterval(done$:Subject<any>){
     let slide_templates:CSlideDirective[] = this.slide_templates.toArray();
     let i:number = 0;
     while(i<slide_templates.length && !slide_templates[i].active){
       i++;
     }
     if(i<slide_templates.length){
+      this.slideAnimationTargets$.pipe(delay(0)).pipe(filter((targets) => { return targets.length == 2 })).pipe(take(1)).subscribe((targets:SlideAnimationTargetDirective[]) => {
+        if(this.animation){
+          if(targets[0] != targets[targets.length-1]){
+            if(this.playerIn){ this.playerIn.destroy(); }
+            if(this.playerOut){ this.playerOut.destroy(); }
+            this.playerIn = this.animation.in.create(targets[0]._elRef.nativeElement);
+            this.playerOut = this.animation.out.create(targets[targets.length-1]._elRef.nativeElement);
+            
+            this.playerIn.onStart(() => {
+              this.deactivateAll();
+              slide_templates[i].markActive();
+            });
+
+            this.playerIn.play();
+            this.playerOut.play();
+
+            this.playerIn.onDone(() => {
+              if(slide_templates.length >= 3){
+                if(i == slide_templates.length - 2){
+                  this.deactivateAll();
+                  this.render([slide_templates[i+1].markActive()]);
+                }else if(i == slide_templates.length - 1){
+                  if(this.circular){
+                    this.deactivateAll();
+                    this.render([slide_templates[0].markActive()]);
+                  }
+                }else{
+                  this.deactivateAll();
+                  this.render([slide_templates[i+1].markActive()]);
+                }
+              }else if(slide_templates.length == 2){
+                if(i == 0){
+                  this.deactivateAll();
+                  this.render([slide_templates[1].markActive()]);
+                }else if(i == 1){
+                  if(this.circular){
+                    this.deactivateAll();
+                    this.render([slide_templates[0].markActive()]);
+                  }
+                }
+              }
+              done$.next(this.getActiveSlide());
+            });
+          }
+        }
+      });
       if(slide_templates.length >= 3){
         if(i == slide_templates.length - 2){
           this.deactivateAll();
-          this.render([slide_templates[i], slide_templates[i+1].markActive(), slide_templates[0]]);
+          this.render([slide_templates[i].markActive(), slide_templates[i+1]]);
         }else if(i == slide_templates.length - 1){
           if(this.circular){
             this.deactivateAll();
-            this.render([slide_templates[i], slide_templates[0].markActive(), slide_templates[1]]);
-          } // else dont deactivate
+            this.render([slide_templates[i].markActive(), slide_templates[0]]);
+          }
         }else{
           this.deactivateAll();
-          this.render([slide_templates[i], slide_templates[i+1].markActive(), slide_templates[i+2]]);
+          this.render([slide_templates[i].markActive(), slide_templates[i+1]]);
         }
       }else if(slide_templates.length == 2){
         if(i == 0){
           this.deactivateAll();
-          this.render([slide_templates[0], slide_templates[1].markActive()]);
+          this.render([slide_templates[0].markActive(), slide_templates[1]]);
         }else if(i == 1){
           if(this.circular){
             this.deactivateAll();
-            this.render([slide_templates[1], slide_templates[0].markActive()]);
+            this.render([slide_templates[1].markActive(), slide_templates[0]]);
           }
         }
       }
     }
   }
 
-  private _renderPrevInterval(){
+  private _renderPrevInterval(done$:Subject<any>){
     let slide_templates:CSlideDirective[] = this.slide_templates.toArray();
     let i:number = 0;
     while(i<slide_templates.length && !slide_templates[i].active){
       i++;
     }
     if(i<slide_templates.length){
+      this.slideAnimationTargets$.pipe(delay(0)).pipe(filter((targets) => { return targets.length == 2; })).pipe(take(1)).subscribe((targets:SlideAnimationTargetDirective[]) => {
+          if(this.animation){
+            if(targets[0] != targets[targets.length-1]){
+              if(this.playerIn){ this.playerIn.destroy(); }
+              if(this.playerOut){ this.playerOut.destroy(); }
+
+              this.playerIn = this.animation.in.create(targets[0]._elRef.nativeElement);
+              this.playerOut = this.animation.out.create(targets[targets.length-1]._elRef.nativeElement);
+
+              this.playerIn.onStart(() => {
+                this.deactivateAll();
+                slide_templates[i].markActive();
+              });
+
+              this.playerIn.play();
+              this.playerOut.play();
+
+              this.playerIn.onDone(() => {
+                if(slide_templates.length >= 3){
+                  if(i == 1){
+                    this.deactivateAll();
+                    this.render([slide_templates[0].markActive()]);
+                  }else if(i == 0){
+                    if(this.circular){
+                      this.deactivateAll();
+                      this.render([slide_templates[slide_templates.length - 1].markActive()]);
+                    } // else dont deactivate
+                  }else{
+                    this.deactivateAll();
+                    this.render([slide_templates[i-1].markActive()]);
+                  }
+                }else if(slide_templates.length == 2){
+                  if(i == 0){
+                    this.deactivateAll();
+                    if(this.circular){
+                      this.render([slide_templates[1].markActive()]);
+                    }
+                  }else if(i == 1){
+                    this.deactivateAll();
+                    this.render([slide_templates[0].markActive()]);
+                  }
+                }
+                done$.next(this.getActiveSlide());
+              });
+            }
+          }
+        });
+
       if(slide_templates.length >= 3){
         if(i == 1){
           this.deactivateAll();
-          this.render([slide_templates[slide_templates.length - 1], slide_templates[0].markActive(), slide_templates[1]]);
+          this.render([slide_templates[0], slide_templates[1].markActive()]);
         }else if(i == 0){
           if(this.circular){
             this.deactivateAll();
-            this.render([slide_templates[slide_templates.length - 2], slide_templates[slide_templates.length - 1].markActive(), slide_templates[0]]);
+            this.render([slide_templates[slide_templates.length - 1], slide_templates[0].markActive()]);
           } // else dont deactivate
         }else{
           this.deactivateAll();
-          this.render([slide_templates[i-2], slide_templates[i-1].markActive(), slide_templates[i]]);
+          this.render([slide_templates[i-1], slide_templates[i].markActive()]);
         }
       }else if(slide_templates.length == 2){
         if(i == 0){
           this.deactivateAll();
           if(this.circular){
-            this.render([slide_templates[1].markActive(), slide_templates[0]]);
+            this.render([slide_templates[1], slide_templates[0].markActive()]);
           }
         }else if(i == 1){
           this.deactivateAll();
-          this.render([slide_templates[0].markActive(), slide_templates[1]]);
+          this.render([slide_templates[0], slide_templates[1].markActive()]);
         }
       }
     }
   }
 
   private watchSlide(){
-    this.__slideSubscription = this._slide$.subscribe((slide_index:number) => {
+    this.__slideSubscription = this._slide$.subscribe((to:SlideTo) => {
       if(this.renderAll){
-        this._activateSlide(slide_index);
+        this._activateSlide(to);
+        to.done$.next();
       }else{
         if(this.animation){
-          this._renderAnimateAndActivateSlide(slide_index);
+          this._renderAnimateAndActivateSlide(to);
         }else{
-          this._renderAndActivateSlide(slide_index);
+          this._renderAndActivateSlide(to);
+          to.done$.next(this.getActiveSlide());
         }
       }
     });
   }
 
-  private _activateSlide(i:number){
-    if(i<this._render.length){
+  private _activateSlide(to:SlideTo){
+    if(to.index<this._render.length){
       this.deactivateAll();
-      this._render[i].markActive();
+      this._render[to.index].markActive();
     }
   }
 
-  private _renderAndActivateSlide(i:number){
+  private _renderAndActivateSlide(to:SlideTo){
     let slide_templates:CSlideDirective[] = this.slide_templates.toArray();
-    console.log(i, slide_templates);
-    if(i<slide_templates.length){
+    if(to.index<slide_templates.length){
       this.deactivateAll();
-      this.render([slide_templates[i].markActive()]);
+      this.render([slide_templates[to.index].markActive()]);
     }
   }
 
 
-  private _renderAnimateAndActivateSlide(i:number){
+  private _renderAnimateAndActivateSlide(to:SlideTo){
+    let i:number = to.index;
     let slide_templates:CSlideDirective[] = this.slide_templates.toArray();
     if(i<slide_templates.length){
       let activeIndex:number = this.getActiveSlideIndex();
@@ -330,6 +433,7 @@ export class ContentSliderComponent implements OnInit, OnDestroy, AfterContentIn
               this.playerIn.onDone(() => {
                 this.deactivateAll();
                 this.render([slide_templates[i].markActive()]);
+                to.done$.next(this.getActiveSlide());
               });
             }
           }
@@ -390,12 +494,25 @@ export class ContentSliderComponent implements OnInit, OnDestroy, AfterContentIn
     return null;
   }
 
+  public getActiveSlide():CSlideDirective{
+    let activeIndex = this.getActiveSlideIndex();
+    if(activeIndex != null){
+      return this.slide_templates.toArray()[activeIndex];
+    }
+    return null;
+  }
+
   private unsubscribeFrom(subscription:Subscription){
     if(subscription){
       subscription.unsubscribe();
     }
   }
 
+}
+
+export interface SlideTo{
+  index:number;
+  done$:Subject<CSlideDirective>;
 }
 
 function isArraysEqual(arr1:any[], arr2:any):boolean{
