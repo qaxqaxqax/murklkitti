@@ -11,7 +11,7 @@ section.main-page{
   &.book-cover .main-background{
     background-color: $blue-bell;
   }
-  &.website .main-background{
+  &.label .main-background{
     background-color: $levander-frog;
   }
   &.conceptual-identity .main-background{
@@ -20,7 +20,7 @@ section.main-page{
   &.mini-game .main-background{
     background-color: $blue-velvet;
   }
-  &.logo .main-background{
+  &.website .main-background{
     background-color: $seoul-white;
   }
   &.footer .main-background{
@@ -32,6 +32,9 @@ section.main-page{
   &.mini-game header.main-header .header-center-container, 
   &.mini-game header.main-header .header-center-container nav.menu > ul > li a, &.mini-game header.main-header .header-center-container .name{
     color: $white-smoke;
+  }
+  &.mini-game header.main-header .header-center-container nav.menu > ul > li.underline:after{
+    background-color: $white-smoke;
   }
   &.mini-game header.main-header .header-center-container .name{
     background-image: url('/assets/images/logo-light.svg');
@@ -55,13 +58,13 @@ section.main-page{
     cursor: url('/assets/images/cursor/hover-levanderfrog.svg') 16 16, auto;
     cursor: -webkit-image-set(url('/assets/images/cursor/hover-levanderfrog.svg') 1x, url('/assets/images/cursor/hover-levanderfrog.svg') 2x) 16 16, pointer;
   }
-  &.website .foreground-slider, 
-  &.website header.main-header{
+  &.label .foreground-slider, 
+  &.label header.main-header{
     cursor: url('/assets/images/cursor/default-bluebell.svg') 14.5 14.5, auto;
     cursor: -webkit-image-set(url('/assets/images/cursor/default-bluebell.svg') 1x, url('/assets/images/cursor/default-bluebell.svg') 2x) 14.5 14.5, pointer;
   }
-  &.website .foreground-slider .main-foreground div.center-container .title, 
-  &.website header.main-header .header-center-container nav.menu > ul > li a, &.website header.main-header .header-center-container .name{
+  &.label .foreground-slider .main-foreground div.center-container .title, 
+  &.label header.main-header .header-center-container nav.menu > ul > li a, &.label header.main-header .header-center-container .name{
     cursor: url('/assets/images/cursor/hover-bluebell.svg') 16 16, auto;
     cursor: -webkit-image-set(url('/assets/images/cursor/hover-bluebell.svg') 1x, url('/assets/images/cursor/hover-bluebell.svg') 2x) 16 16, pointer;
   }
@@ -85,13 +88,13 @@ section.main-page{
     cursor: url('/assets/images/cursor/hover-glaciergray.svg') 16 16, auto;
     cursor: -webkit-image-set(url('/assets/images/cursor/hover-glaciergray.svg') 1x, url('/assets/images/cursor/hover-glaciergray.svg') 2x) 16 16, pointer;
   }
-  &.logo .foreground-slider, 
-  &.logo header.main-header{
+  &.website .foreground-slider, 
+  &.website header.main-header{
     cursor: url('/assets/images/cursor/default-bluevelvet.svg') 14.5 14.5, auto;
     cursor: -webkit-image-set(url('/assets/images/cursor/default-bluevelvet.svg') 1x, url('/assets/images/cursor/default-bluevelvet.svg') 2x) 14.5 14.5, pointer;
   }
-  &.logo .foreground-slider .main-foreground div.center-container .title, 
-  &.logo header.main-header .header-center-container nav.menu > ul > li a, &.logo header.main-header .header-center-container .name{
+  &.website .foreground-slider .main-foreground div.center-container .title, 
+  &.website header.main-header .header-center-container nav.menu > ul > li a, &.website header.main-header .header-center-container .name{
     cursor: url('/assets/images/cursor/hover-bluevelvet.svg') 16 16, auto;
     cursor: -webkit-image-set(url('/assets/images/cursor/hover-bluevelvet.svg') 1x, url('/assets/images/cursor/hover-bluevelvet.svg') 2x) 16 16, pointer;
   }
@@ -143,7 +146,7 @@ section.main-page{
           position: absolute;
           left: 0;
           top: 50%;
-          transform: translate(0, -100%);
+          transform: translate(0, -50%);
           font-family: 'Epilogue', sans-serif;
           letter-spacing: rem(.15);
           font-weight: bold;
@@ -193,7 +196,7 @@ section.main-page{
           top: calc(50% + #{rem(400)});
           left: 50%;
           transform: translate(-50%, -50%);
-          font-size: rem(30);
+          font-size: rem(22);
           letter-spacing: rem(.15);
         }
       }

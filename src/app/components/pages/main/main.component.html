@@ -1,8 +1,8 @@
 <section class="main-page {{background}}">
   <header mrklHeader class="main-header">
     <ul>
-      <li><a routerLink="/" [fragment]="'book-cover'">WORK</a></li>
-      <li><a routerLink="/" [fragment]="'contact'">CONTACT</a></li>
+      <li [ngClass]="{'underline': background != 'introduction' && background != 'contact'}"><a routerLink="/" [fragment]="'book-cover'">WORK</a></li>
+      <li [ngClass]="{'underline': background == 'contact'}"><a routerLink="/" [fragment]="'contact'">CONTACT</a></li>
     </ul>
   </header>
   <div class="main-background"></div>

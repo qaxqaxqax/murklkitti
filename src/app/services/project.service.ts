@@ -7,14 +7,14 @@ export class ProjectService {
 
   references:Project[] = [
     {
-      title: "mary shelley's frankenstein",
+      title: "frankenstein",
       type: "BOOK COVER",
       id: 'book-cover'
     },
     {
-      title: "ZIRC VÁROS",
-      type: "WEBSITE",
-      id: 'website' 
+      title: "FIRST THE CRAFT BEER CO.",
+      type: "LABEL ILLUSTRATION",
+      id: 'label'
     },
     {
       title: "FUTURIUM",
@@ -27,10 +27,10 @@ export class ProjectService {
       id: 'mini-game'
     },
     {
-      title: "KECSKEMÉTI SÖRMANUFAKTÚRA",
-      type: "LOGO & WEBSITE",
-      id: 'logo'
-    },
+      title: "ZIRC VÁROS",
+      type: "WEBSITE",
+      id: 'website' 
+    }
   ];
 
   constructor() {

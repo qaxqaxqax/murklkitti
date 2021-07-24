@@ -63,7 +63,7 @@ export class MainComponent implements OnInit, OnDestroy , AfterViewInit{
           });
         });
       }
-      if(fragment && !document.querySelector(`.${fragment}`)){
+      if(fragment && fragment.indexOf('/') == -1 && !document.querySelector(`.${fragment}`)){
         this.slide(fragment);
       }
     });

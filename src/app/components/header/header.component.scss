@@ -45,6 +45,19 @@ header[mrklHeader]{
           float: left;
           display: block;
           margin-left: rem(80);
+          position: relative;
+          &.underline{
+            &:after{
+              content: '';
+              display: block;
+              position: absolute;
+              height: rem(1);
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background-color: $dark-gray;
+            }   
+          }
           a{
             color: $dark-gray;
             text-decoration: none;
